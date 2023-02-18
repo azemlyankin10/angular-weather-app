@@ -1,0 +1,14 @@
+<div class="container">
+    <app-input-sity
+        #form
+        (submitted)="onSubmitForm(form.searchTerm)"
+        class="mt-5 container"
+    ></app-input-sity>
+
+    <app-loader *ngIf="isLoading"></app-loader>
+    <app-wheather-card
+        *ngIf="!isLoading"
+        [cardData]="weatherCardData"
+        class="mt-5 container"
+    ></app-wheather-card>
+</div>
