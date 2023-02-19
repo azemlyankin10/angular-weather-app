@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { IWeatherCard } from 'src/app/interfaces/card-data';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IForecastCard, IWeatherCard } from 'src/app/interfaces/card-data';
 
 @Component({
     selector: 'app-wheather-card',
@@ -16,5 +16,18 @@ export class WheatherCardComponent {
         windDirection: 0,
         temp: 0,
         tempName: '',
+        country: '',
+        min: 0,
+        max: 0,
     };
+
+    @Input() showForecastButton = true;
+
+    @Input() forecastData: IForecastCard[][] = [[]];
+
+    @Output() getforecastbutton = new EventEmitter<any>();
+
+    getForecast() {
+        this.getforecastbutton.emit();
+    }
 }

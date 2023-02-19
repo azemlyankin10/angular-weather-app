@@ -1,2 +1,17 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
+<div style="display: flex; flex-direction: column; min-height: 100vh">
+    <app-header></app-header>
+    <main style="flex: 1">
+        <router-outlet></router-outlet>
+    </main>
+    <footer class="bg-light py-3 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">
+                This website uses the
+                <a href="https://openweathermap.org/" target="_blank"
+                    >OpenWeatherMap API</a
+                >.
+            </p>
+            <p class="mb-0">All weather data is provided by OpenWeatherMap.</p>
+        </div>
+    </footer>
+</div>

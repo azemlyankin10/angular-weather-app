@@ -1,10 +1,14 @@
-<div class="card text-white bg-primary mb-3">
+<div class="card text-white bg-primary mb-5">
     <div class="card-header">
-        Current Weather in <span>{{ cardData.city }}</span>
+        Current Weather in
+        <span>{{ cardData.city }} ({{ cardData.country }})</span>
     </div>
     <div class="card-body">
         <h5 class="card-title">
-            <span>{{ cardData.temp }}</span> &deg;
+            <span>now: {{ cardData.temp }}</span> &deg;
+            <span class="text-warning fs-5"
+                >min: {{ cardData.min }} / max: {{ cardData.max }}</span
+            >
         </h5>
         <p class="card-text">
             <span>{{ cardData.tempName }}</span>
@@ -31,4 +35,68 @@
             <span>{{ cardData.windDirection }}</span>
         </li>
     </ul>
+
+    <button
+        *ngIf="showForecastButton"
+        type="button"
+        class="btn btn-primary"
+        (click)="getForecast()"
+    >
+        Get forecast
+    </button>
+</div>
+
+<div>
+    <h2 *ngIf="forecastData.length > 1" class="mb-2">
+        Forecast for 4 days in {{ cardData.city }}
+    </h2>
+    <div
+        class="mb-5 bg-info py-4 px-1 rounded"
+        *ngFor="let cards of forecastData"
+    >
+        <h3 class="text-center mb-3 text-light">
+            {{ cards[0].date * 1000 | date : "dd.MM.YYYY" }}
+        </h3>
+        <carousel
+            [showIndicators]="false"
+            [itemsPerSlide]="4"
+            [singleSlideOffset]="false"
+            [interval]="0"
+            [indicatorsByChunk]="true"
+            class="mb-5"
+        >
+            <slide *ngFor="let card of cards">
+                <li class="card" style="width: 18rem">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Time: {{ card.date * 1000 | date : "HH" }}:00 h
+                        </h5>
+                        <p class="card-text">{{ card.tempName }}</p>
+                        <p class="card-text">
+                            <strong>Temperature:</strong> {{ card.temp }} &deg;C
+                        </p>
+                        <p class="card-text">
+                            <strong>Feels like:</strong>
+                            {{ card.feelsLikeTemp }} &deg;
+                        </p>
+                        <p class="card-text">
+                            <strong>Minimal temperature:</strong>
+                            {{ card.min }} &deg;
+                        </p>
+                        <p class="card-text">
+                            <strong>Maximum temperature:</strong>
+                            {{ card.max }} &deg;
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Humidity:</strong> {{ card.humidity }} %
+                        </p>
+                        <p class="card-text">
+                            <strong>Wind:</strong> {{ card.wind }} km/h
+                        </p>
+                    </div>
+                </li>
+            </slide>
+        </carousel>
+    </div>
 </div>

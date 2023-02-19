@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LoaderComponent } from './components/loader/loader.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 @NgModule({
     declarations: [
         AppComponent,
@@ -30,6 +31,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
         BrowserAnimationsModule,
         HttpClientModule,
         TypeaheadModule.forRoot(),
+        CarouselModule.forRoot(),
     ],
     providers: [Geolocation],
     bootstrap: [AppComponent],

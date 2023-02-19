@@ -5,6 +5,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { catchError, from, map, switchMap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { IGeoCodeData } from '../interfaces/geo-data';
+import { IForecast } from '../interfaces/forecast-data';
 
 @Injectable({
     providedIn: 'root',
@@ -34,17 +35,26 @@ export class WheatherService {
         );
     }
 
+    getForecast(city: string) {
+        const url = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${environment.openWeatherMapApi}&units=metric`;
+
+        return this.http.get(url).pipe(
+            map((data: any) => data.list as IForecast[]),
+            catchError((error) => {
+                console.log('Problem with getting forecast', error);
+                return [];
+            })
+        );
+    }
+
     getWheatherByName(city: string) {
-        return this.http
-            .get(
-                `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${environment.openWeatherMapApi}`
-            )
-            .pipe(
-                catchError((error) => {
-                    console.log('Problem with getting weather', error);
-                    return [];
-                })
-            );
+        const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${environment.openWeatherMapApi}&units=metric`;
+        return this.http.get<RootWeatherData>(url).pipe(
+            catchError((error) => {
+                console.log('Problem with getting weather', error);
+                return [];
+            })
+        );
     }
 
     getWeatherInCurrentPossition() {
