@@ -1,8 +1,8 @@
 <form (ngSubmit)="onSubmit()" class="d-flex">
     <input
+        id="search"
         class="form-control"
         [(ngModel)]="searchTerm"
-        (input)="onSearch()"
         [typeahead]="cities"
         [typeaheadOptionField]="'name'"
         [typeaheadWaitMs]="300"

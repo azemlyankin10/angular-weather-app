@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { debounceTime, distinctUntilChanged, fromEvent, switchMap } from 'rxjs';
 import { Coord } from 'src/app/interfaces/weather-data';
 import { WeatherService } from 'src/app/services/weather.service';
 
@@ -7,7 +8,7 @@ import { WeatherService } from 'src/app/services/weather.service';
     templateUrl: './input-city.component.html',
     styleUrls: ['./input-city.component.scss'],
 })
-export class InputCityComponent {
+export class InputCityComponent implements OnInit {
     constructor(private weatherService: WeatherService) {}
 
     @Output() submitted = new EventEmitter<any>();
@@ -15,16 +16,26 @@ export class InputCityComponent {
     cities: string[] = [];
     coords: Coord | undefined;
 
-    onSubmit() {
-        this.submitted.emit();
-        this.searchTerm = '';
-    }
+    ngOnInit() {
+        const searchInput = document.getElementById(
+            'search'
+        ) as HTMLInputElement;
 
-    onSearch() {
-        this.weatherService
-            .getGeocode(this.searchTerm, 6)
+        fromEvent(searchInput, 'input')
+            .pipe(
+                debounceTime(500),
+                distinctUntilChanged(),
+                switchMap(() => {
+                    return this.weatherService.getGeocode(this.searchTerm, 6);
+                })
+            )
             .subscribe((result) => {
                 this.cities = result.map((el) => `${el.name}(${el.country})`);
             });
+    }
+
+    onSubmit() {
+        this.submitted.emit();
+        this.searchTerm = '';
     }
 }
