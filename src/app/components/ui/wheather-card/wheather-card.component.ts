@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IForecastCard, IWeatherCard } from 'src/app/interfaces/card-data';
+import { IWeatherCard } from 'src/app/interfaces/card-data';
 
 @Component({
     selector: 'app-wheather-card',
