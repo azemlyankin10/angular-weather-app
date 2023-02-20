@@ -1,54 +1,6 @@
-<div class="card text-white bg-primary mb-5">
-    <div class="card-header">
-        Current Weather in
-        <span>{{ cardData.city }} ({{ cardData.country }})</span>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">
-            <span>now: {{ cardData.temp }}</span> &deg;
-            <span class="text-warning fs-5"
-                >min: {{ cardData.min }} / max: {{ cardData.max }}</span
-            >
-        </h5>
-        <p class="card-text">
-            <span>{{ cardData.tempName }}</span>
-        </p>
-    </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-            <strong>Feels like: </strong>
-            <span>{{ cardData.feelsLike }}</span> &deg;C
-        </li>
-        <li class="list-group-item">
-            <strong>Humidity: </strong> <span>{{ cardData.humidity }}</span
-            >%
-        </li>
-        <li class="list-group-item">
-            <strong>Pressure: </strong> <span>{{ cardData.pressure }}</span> hPa
-        </li>
-        <li class="list-group-item">
-            <strong>Wind Speed: </strong>
-            <span>{{ cardData.windSpeed }}</span> km/h
-        </li>
-        <li class="list-group-item">
-            <strong>Wind Direction: </strong>
-            <span>{{ cardData.windDirection }}</span>
-        </li>
-    </ul>
-
-    <button
-        *ngIf="showForecastButton"
-        type="button"
-        class="btn btn-primary"
-        (click)="getForecast()"
-    >
-        Get forecast
-    </button>
-</div>
-
 <div>
     <h2 *ngIf="forecastData.length > 1" class="mb-2">
-        Forecast for 4 days in {{ cardData.city }}
+        Forecast for 4 days in {{ cityName }}
     </h2>
     <div
         class="mb-5 bg-info py-4 px-1 rounded"
@@ -77,15 +29,15 @@
                         </p>
                         <p class="card-text">
                             <strong>Feels like:</strong>
-                            {{ card.feelsLikeTemp }} &deg;
+                            {{ card.feelsLikeTemp }} &deg;C
                         </p>
                         <p class="card-text">
                             <strong>Minimal temperature:</strong>
-                            {{ card.min }} &deg;
+                            {{ card.min }} &deg;C
                         </p>
                         <p class="card-text">
                             <strong>Maximum temperature:</strong>
-                            {{ card.max }} &deg;
+                            {{ card.max }} &deg;C
                         </p>
 
                         <p class="card-text">

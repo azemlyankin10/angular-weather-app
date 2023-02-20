@@ -1,15 +1,14 @@
 <div class="container">
-    <app-input-sity
+    <app-input-city
         #form
-        (submitted)="onSubmitForm(form.searchTerm)"
+        (submitted)="getWeatherByName(form.searchTerm)"
         class="mt-5 container"
-    ></app-input-sity>
+    ></app-input-city>
 
     <app-loader *ngIf="isLoading"></app-loader>
     <app-wheather-card
         *ngIf="!isLoading && weatherCardData"
         [cardData]="weatherCardData"
-        [forecastData]="forecastCardsData"
         (getforecastbutton)="getForecast()"
         [showForecastButton]="forecastCardsData.length < 1"
         class="mt-5 container"
@@ -18,15 +17,22 @@
         *ngIf="!weatherCardData && !isLoading"
         class="mt-5 container fs-1 text-secondary"
     >
-        Choose the city to show the weather!
+        {{ title }}
     </div>
+    <app-forecast-card
+        [forecastData]="forecastCardsData"
+        [title]="weatherCardData?.city"
+    ></app-forecast-card>
+    <app-loader *ngIf="isForecastLoading"></app-loader>
 </div>
 
-<button
-    class="button-92"
-    role="button"
-    (click)="getWheatherByCurrentPossition()"
->
-    Get wheather by current possition
-</button>
-<app-loader *ngIf="isForecastLoading"></app-loader>
+<app-chooses-cities-list
+    [choosesCities]="choosesCities"
+    (deleteAllEvent)="deleteAllChoosesCities()"
+    (chooseCityEvent)="chooseThePreviouslyCity($event)"
+    (deleteBtnEvent)="deleteItemFromPreviouslyList($event)"
+></app-chooses-cities-list>
+
+<app-btn-current-position
+    (clickEvent)="getWheatherByCurrentPosition()"
+></app-btn-current-position>

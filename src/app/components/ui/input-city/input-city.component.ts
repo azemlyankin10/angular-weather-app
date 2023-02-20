@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Coord } from 'src/app/interfaces/weather-data';
-import { WheatherService } from 'src/app/services/wheather.service';
+import { WeatherService } from 'src/app/services/weather.service';
 
 @Component({
-    selector: 'app-input-sity',
-    templateUrl: './input-sity.component.html',
-    styleUrls: ['./input-sity.component.scss'],
+    selector: 'app-input-city',
+    templateUrl: './input-city.component.html',
+    styleUrls: ['./input-city.component.scss'],
 })
-export class InputSityComponent {
-    constructor(private wheatherService: WheatherService) {}
+export class InputCityComponent {
+    constructor(private weatherService: WeatherService) {}
 
     @Output() submitted = new EventEmitter<any>();
     searchTerm = '';
@@ -21,8 +21,8 @@ export class InputSityComponent {
     }
 
     onSearch() {
-        this.wheatherService
-            .getGeocod(this.searchTerm, 6)
+        this.weatherService
+            .getGeocode(this.searchTerm, 6)
             .subscribe((result) => {
                 this.cities = result.map((el) => `${el.name}(${el.country})`);
             });

@@ -23,8 +23,6 @@ export class WheatherCardComponent {
 
     @Input() showForecastButton = true;
 
-    @Input() forecastData: IForecastCard[][] = [[]];
-
     @Output() getforecastbutton = new EventEmitter<any>();
 
     getForecast() {

@@ -1,0 +1,48 @@
+<div class="card text-white bg-primary mb-5">
+    <div class="card-header">
+        Current Weather in
+        <span>{{ cardData.city }} ({{ cardData.country }})</span>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">
+            <span>now: {{ cardData.temp }}</span> &deg;C
+            <span class="text-warning fs-5"
+                >min: {{ cardData.min }} &deg;C / max:
+                {{ cardData.max }} &deg;C</span
+            >
+        </h5>
+        <p class="card-text">
+            <span>{{ cardData.tempName }}</span>
+        </p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <strong>Feels like: </strong>
+            <span>{{ cardData.feelsLike }}</span> &deg;C
+        </li>
+        <li class="list-group-item">
+            <strong>Humidity: </strong> <span>{{ cardData.humidity }}</span
+            >%
+        </li>
+        <li class="list-group-item">
+            <strong>Pressure: </strong> <span>{{ cardData.pressure }}</span> hPa
+        </li>
+        <li class="list-group-item">
+            <strong>Wind Speed: </strong>
+            <span>{{ cardData.windSpeed }}</span> km/h
+        </li>
+        <li class="list-group-item">
+            <strong>Wind Direction: </strong>
+            <span>{{ cardData.windDirection }}</span>
+        </li>
+    </ul>
+
+    <button
+        *ngIf="showForecastButton"
+        type="button"
+        class="btn btn-primary"
+        (click)="getForecast()"
+    >
+        Get forecast
+    </button>
+</div>

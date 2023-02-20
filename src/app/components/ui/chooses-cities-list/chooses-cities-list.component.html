@@ -1,0 +1,31 @@
+<div *ngIf="choosesCities.length > 0" class="container my-5">
+    <div class="d-inline-flex justify-content-between align-items-center">
+        <h3>Previously selected cities</h3>
+        <button
+            class="btn btn-sm btn-outline-danger ms-3"
+            (click)="deleteAllChoosesCities()"
+        >
+            Delete all
+        </button>
+    </div>
+    <div
+        class="list-group mt-2"
+        style="max-width: 300px"
+        (click)="chooseThePreviouslyCity($event)"
+    >
+        <button
+            *ngFor="let city of choosesCities"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            [attr.data-buttonCity]="city"
+        >
+            {{ city }}
+            <button
+                [attr.data-deleteButtonCity]="city"
+                type="button"
+                class="btn btn-sm btn-outline-danger delete-btn"
+            >
+                Delete
+            </button>
+        </button>
+    </div>
+</div>

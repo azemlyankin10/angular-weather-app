@@ -1,91 +1,117 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { IForecastCard, IWeatherCard } from 'src/app/interfaces/card-data';
-import { IForecast } from 'src/app/interfaces/forecast-data';
-import { RootWeatherData } from 'src/app/interfaces/weather-data';
-import { WheatherService } from 'src/app/services/wheather.service';
+import { LocalstorageService } from 'src/app/services/localstorage.service';
+import { WeatherService } from 'src/app/services/weather.service';
+import {
+    createForecastCard,
+    createWeatherCard,
+    groupByDate,
+} from 'src/app/utils/home-component-functions';
 
+const LOCALSTORAGEKEY = 'chooses-cities';
 @Component({
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-    constructor(private weatherService: WheatherService) {}
+    constructor(
+        private weatherService: WeatherService,
+        private localstorageService: LocalstorageService
+    ) {}
 
     weatherCardData: IWeatherCard | undefined;
-
     forecastCardsData: IForecastCard[][] = [];
+    choosesCities = this.setChoosesCities();
     isLoading = false;
     isForecastLoading = false;
-    private currentSity = '';
+    title = 'Choose the city to show the weather!';
+    private currentCity = '';
 
-    getWheatherByCurrentPossition() {
+    private setChoosesCities() {
+        const arr = this.localstorageService.getItem(LOCALSTORAGEKEY);
+        if (!arr) {
+            return [];
+        }
+        return arr;
+    }
+
+    getWheatherByCurrentPosition() {
         this.isLoading = true;
-        this.weatherService.getWeatherInCurrentPossition().subscribe((data) => {
-            this.weatherCardData = this.createWeatherCard(data);
-            this.isLoading = false;
-            this.currentSity = data.name;
-        });
+        this.weatherService.getWeatherInCurrentPosition().subscribe(
+            (data) => {
+                this.weatherCardData = createWeatherCard(data);
+                this.isLoading = false;
+                this.currentCity = data.name;
+                this.title = 'Choose the city to show the weather!';
+                this.localstorageService.setItem(
+                    LOCALSTORAGEKEY,
+                    this.weatherCardData?.city
+                );
+                this.choosesCities = this.setChoosesCities();
+            },
+            (error) => {
+                this.title =
+                    'Problem with getting weather for current position! \n Maybe you have location services turned off?';
+                console.log(
+                    'error with getting weather by current position',
+                    error
+                );
+                alert(error.message);
+                this.weatherCardData = undefined;
+                this.isLoading = false;
+            }
+        );
     }
 
     getForecast() {
         this.isForecastLoading = true;
-        this.weatherService.getForecast(this.currentSity).subscribe((data) => {
-            this.forecastCardsData = groupByDate(data).map((el: any) =>
-                el.map((card: any) => this.createForecastCard(card))
-            );
-            this.isForecastLoading = false;
-        });
+        this.weatherService.getForecast(this.currentCity).subscribe(
+            (data) => {
+                this.forecastCardsData = groupByDate(data).map((el) =>
+                    el.map((card) => createForecastCard(card))
+                );
+                this.isForecastLoading = false;
+            },
+            (error) => {
+                console.log('error with getting forecast', error);
+                alert('There is a problem with getting the forecast!');
+            }
+        );
     }
 
-    onSubmitForm(sity: string) {
-        sity = sity.replace(/\([^)]*\)/g, '');
+    getWeatherByName(city: string) {
+        city = city.replace(/\([^)]*\)/g, '');
         this.isLoading = true;
         this.forecastCardsData = [];
-        this.weatherService.getWheatherByName(sity).subscribe((data) => {
-            this.weatherCardData = this.createWeatherCard(data);
-            this.isLoading = false;
-            this.currentSity = sity;
-        });
+        this.weatherService.getWheatherByName(city).subscribe(
+            (data) => {
+                this.weatherCardData = createWeatherCard(data);
+                this.currentCity = city;
+                this.isLoading = false;
+                this.title = 'Choose the city to show the weather!';
+                this.localstorageService.setItem(LOCALSTORAGEKEY, city);
+                this.choosesCities = this.setChoosesCities();
+            },
+            (error) => {
+                this.title = 'City not found!';
+                console.log('error with getting weather by name', error);
+                this.weatherCardData = undefined;
+                this.isLoading = false;
+            }
+        );
     }
 
-    private createWeatherCard(data: RootWeatherData): IWeatherCard {
-        return {
-            country: data.sys.country,
-            city: data.name,
-            temp: Math.round(data.main.temp),
-            min: Math.round(data.main.temp_min),
-            max: Math.round(data.main.temp_max),
-            tempName: data.weather[0].main,
-            feelsLike: Math.round(data.main.feels_like),
-            humidity: data.main.humidity,
-            pressure: data.main.pressure,
-            windSpeed: Math.round(data.wind.speed),
-            windDirection: data.wind.deg,
-        };
+    chooseThePreviouslyCity(cityName: string) {
+        this.getWeatherByName(cityName);
     }
 
-    private createForecastCard(data: IForecast): IForecastCard {
-        return {
-            date: data.dt,
-            temp: data.main.temp,
-            feelsLikeTemp: data.main.feels_like,
-            min: data.main.temp_min,
-            max: data.main.temp_max,
-            tempName: data.weather[0].description,
-            humidity: data.main.humidity,
-            wind: data.wind.speed,
-        };
+    deleteItemFromPreviouslyList(arrayOfList: string[]) {
+        this.localstorageService.setItem(LOCALSTORAGEKEY, arrayOfList, true);
+        this.choosesCities = this.setChoosesCities();
     }
-}
 
-function groupByDate(arr: IForecast[]) {
-    const groups: any = {};
-    arr.forEach((item) => {
-        const date = item.dt_txt.split(' ')[0];
-        if (!groups[date]) {
-            groups[date] = [];
-        }
-        groups[date].push(item);
-    });
-    return Object.values(groups);
+    deleteAllChoosesCities() {
+        this.localstorageService.clear(LOCALSTORAGEKEY);
+        this.choosesCities = this.setChoosesCities();
+    }
 }
